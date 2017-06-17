@@ -1,5 +1,6 @@
 package com.hadoop.wc.driver;
 
+// classes are in "mapred" package in old API
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -17,6 +18,7 @@ import org.apache.hadoop.util.ToolRunner;
 import com.hadoop.wc.mapper.WordCountMapper;
 import com.hadoop.wc.reducer.WordCountReducer;
 
+// Tool interface needs to be implemented in old API 
 public class WordCountDriver extends Configured implements Tool {
 
 
@@ -53,19 +55,24 @@ public class WordCountDriver extends Configured implements Tool {
 		
 		// Setting the configurations ..
 		// -----------------------------
-		//OutputKeyClass
-		//OutputValueClass
-		//Mapper Class
-		//Reducer Class
-		//InputFormat
-		//OutputFormat
-		//InputFilePath
-		//OutputFolderPath
+		// Job name (Optional)
+		// InputPaths - file(s)
+		// OutputPath - directory
+		// InputFormat (Optional)
+		// OutputFormat (Optional)
+		// Mapper Class
+		// Reducer Class
+		// OutputKeyClass
+		// OutputValueClass
+		
+		jobConf.setJobName("wordcount-job");
 
 		FileInputFormat.setInputPaths(jobConf, new Path(args[0]));
 		FileOutputFormat.setOutputPath(jobConf, new Path(args[1]));
 		
-		jobConf.setJobName("wordcount-job");
+		// default is TextInputFormat and TextOutputFormat if not written 
+		jobConf.setInputFormat(TextInputFormat.class);
+		jobConf.setOutputFormat(TextOutputFormat.class);
 		
 		jobConf.setMapperClass(WordCountMapper.class);
 		jobConf.setReducerClass(WordCountReducer.class);
@@ -73,10 +80,8 @@ public class WordCountDriver extends Configured implements Tool {
 		jobConf.setOutputKeyClass(Text.class);
 		jobConf.setOutputValueClass(IntWritable.class);
 		
-		jobConf.setInputFormat(TextInputFormat.class);
-		jobConf.setOutputFormat(TextOutputFormat.class);
-		
-		//submit the job
+		// submit the job
+		// trigger method is JobClient.runJob() in old API to submit the job.
 		JobClient.runJob(jobConf);
 		
 		return 0;
